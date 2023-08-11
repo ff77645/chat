@@ -1,14 +1,18 @@
-import {createRouter,createWebHashHistory} from 'vue-router'
+import {createRouter,createWebHistory} from 'vue-router'
 
 const routes = [
     {
         path:'/',
         component:()=>import("@/components/HelloWorld.vue")
-    }
+    },
+    {
+        path:'/chat',
+        component:()=>import("@/pages/chat.vue")
+    },
 ]
 
 const router = createRouter({
-    history:createWebHashHistory(),
+    history:createWebHistory(),
     routes
 })
 
