@@ -41,29 +41,54 @@
     :with-header="false"
     class="custom-drawer"
 >   
-    <div class="flex flex-row gap-4">
-        <div class="action-box">创建房间</div>
-        <div class="action-box">创建房间</div>
-    </div>
-    <div class="m mt-10">
-        <div class="h-14 text-tt-primary bg-base text-center leading-10">
-            room name
+    <div class="h-full flex flex-col flex-nowrap justify-between items-stretch">
+        <div class="flex flex-row gap-4">
+            <div @click="handleJoinRoom" class="action-box">加入房间</div>
+            <div @click="handleCreateRoom" class="action-box">创建房间</div>
+        </div>
+        <div class="flex-1 mt-4 overflow-auto">
+            <div v-for="i in 10" :key="i" class="h-14 text-tt-primary bg-base text-center leading-10 cursor-pointer">
+                room name
+            </div>
+        </div>
+        <div class="h-10 rounded leading-10 text-center">
+            设置
         </div>
     </div>
-    
 </el-drawer>
+<el-dialog v-model="roomDialogState.show" :title="roomDialogState.title" width="30%" center>
+    <div class="">
+        {{ roomDialogState.label }}: <input v-model="roomDialogState.input" class="outline-none" :placeholder="roomDialogState.placeholder" type="text">
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="roomDialogCancle">取消</el-button>
+        <el-button @click="roomDIalogConfirm" type="primary">确认</el-button>
+      </span>
+    </template>
+</el-dialog>
+
+
 </template>
 <script setup>
 import {Operation,Setting} from '@element-plus/icons-vue'
 import MsgText from '@/components/MsgText/index.vue'
-import {ref,nextTick} from 'vue'
+import {ref,nextTick,reactive} from 'vue'
 
 
 const inputText = ref('')
 const scrollRef = ref()
 const scrollInnerRef = ref()
 const drawerLeft = ref(true)
+const createRoomDialog = ref(true)
 
+const roomDialogState = reactive({
+    show:false,
+    title:'创建房间',
+    input:'',
+    label:'房间名称',
+    placeholder:'请输入房间名称',
+})
 const msgList = ref([
     {
         user:{
@@ -91,6 +116,28 @@ const msgList = ref([
     },
 ])
 
+const handleJoinRoom = ()=>{
+    roomDialogState.title = '加入房间'
+    roomDialogState.label = '房间号'
+    roomDialogState.placeholder = '请输入房间号'
+    roomDialogState.show = true
+}
+
+const handleCreateRoom = ()=>{
+    roomDialogState.title = '创建房间'
+    roomDialogState.label = '房间名称'
+    roomDialogState.placeholder = '请输入房间名称'
+    roomDialogState.show = true
+}
+
+const roomDialogCancle = ()=>{
+    roomDialogState.show = false
+}
+
+const roomDIalogConfirm = ()=>{
+    createRoomDialog.show = false
+}
+
 
 const handleSend = ()=>{
     if(!inputText.value) return
@@ -104,10 +151,6 @@ const handleSend = ()=>{
     })
     inputText.value = ''
     nextTick(()=>{
-        console.log({
-            scrollRef:scrollRef.value,
-            scrollInnerRef:scrollInnerRef.value,
-        });
         scrollRef.value.scrollTo({
             top:scrollInnerRef.value.clientHeight,
             behavior:'smooth',

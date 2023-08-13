@@ -9,6 +9,10 @@ const routes = [
         path:'/chat',
         component:()=>import("@/pages/chat.vue")
     },
+    {
+        path:'/login',
+        component:()=>import("@/pages/login.vue")
+    },
 ]
 
 const router = createRouter({
